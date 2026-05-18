@@ -1,0 +1,42 @@
+{
+  "name": "fivem-server-api",
+  "version": "1.2.7",
+  "description": "API Wrapper for getting information about FiveM Server",
+  "main": "index.cjs",
+  "module": "index.mjs",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fivem",
+    "api",
+    "fivem ip",
+    "fivem api",
+    "fivem player api",
+    "fivem server api",
+    "fivem server status",
+    "fivem player count",
+    "fivem player info",
+    "fivem api npm",
+    "fivem js",
+    "cfxre",
+    "cfxre url"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/AvuxDemons/fivem-server-api.git"
+  },
+  "author": "AvuxDemons",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AvuxDemons/fivem-server-api/issues"
+  },
+  "homepage": "https://github.com/AvuxDemons/fivem-server-api",
+  "dependencies": {
+    "axios": "^1.7.9"
+  },
+  "publishConfig": {
+    "@avuxdemons:registry": "https://npm.pkg.github.com"
+  }
+}
