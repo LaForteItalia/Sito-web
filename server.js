@@ -7,91 +7,186 @@ const app = express();
 const port = 3000;
 
 app.use(cors());
+app.use(express.json());
 
-// Configurazione server
+// ===============================
+// CONFIGURAZIONE SERVER
+// ===============================
 const SERVER_ADDRESS = '45.138.201.37:30120';
 const CFX_ID = '4odj5q';
-const server = new FiveM(SERVER_ADDRESS, { timeout: 5000 });
 
+const server = new FiveM(SERVER_ADDRESS, {
+    timeout: 5000
+});
+
+// ===============================
+// STATUS ENDPOINT
+// ===============================
 app.get('/status', async (req, res) => {
+
     let playerCount = 0;
+    let maxPlayers = 0;
     let isOnline = false;
+    let serverName = 'Unknown';
 
     try {
-        console.log(`[${new Date().toLocaleTimeString()}] Richiesta stato server (Metodo IP: ${SERVER_ADDRESS})...`);
-        
-        // Tentativo tramite il pacchetto fivem-server-api (IP Diretto aggiornato)
+
+        console.log(`================================================`);
+        console.log(`[${new Date().toLocaleTimeString()}] 🔍 Controllo server FiveM...`);
+
+        // =========================
+        // METODO 1 - IP DIRETTO
+        // =========================
         const status = await server.getServerStatus();
-        
+
         if (status && status.online) {
+
             isOnline = true;
+
             const players = await server.getPlayers();
+
             if (typeof players === 'number') {
                 playerCount = players;
-                console.log(`[${new Date().toLocaleTimeString()}] Successo tramite IP: ${playerCount} giocatori.`);
             }
+
+            try {
+
+                const infoResponse = await axios.get(
+                    `http://${SERVER_ADDRESS}/info.json`,
+                    { timeout: 5000 }
+                );
+
+                if (infoResponse.data) {
+
+                    serverName =
+                        infoResponse.data.vars?.sv_projectName ||
+                        infoResponse.data.vars?.sv_hostname ||
+                        'FiveM Server';
+
+                    maxPlayers =
+                        infoResponse.data.vars?.sv_maxClients || 0;
+                }
+
+            } catch (err) {}
+
         } else {
-            throw new Error("Server non raggiungibile via IP");
+            throw new Error("Server offline");
         }
+
     } catch (error) {
-        console.warn(`[${new Date().toLocaleTimeString()}] IP Diretto fallito. Provo a risolvere ID CFX: ${CFX_ID}...`);
+
+        console.warn(`[IP] Fallito, provo CFX...`);
 
         try {
-            // Metodo 1: Risoluzione IP tramite l'URL di Join (Il più affidabile)
-            const joinResponse = await axios.head(`https://cfx.re/join/${CFX_ID}`, { timeout: 5000 });
-            const realIp = joinResponse.headers['x-citizenfx-url']?.replace('http://', '').replace('/', '');
 
-            if (realIp) {
-                console.log(`[${new Date().toLocaleTimeString()}] IP risolto da CFX: ${realIp}. Recupero dati...`);
-                const statsResponse = await axios.get(`http://${realIp}players.json`, { timeout: 5000 });
-                if (Array.isArray(statsResponse.data)) {
-                    playerCount = statsResponse.data.length;
-                    isOnline = true;
-                    console.log(`[${new Date().toLocaleTimeString()}] Successo tramite IP risolto: ${playerCount} giocatori.`);
-                }
-            } else {
-                throw new Error("Impossibile risolvere IP da CFX");
-            }
-        } catch (cfxError) {
-            console.warn(`[${new Date().toLocaleTimeString()}] Risoluzione IP fallita. Provo API Live FiveM...`);
-            
-            try {
-                // Metodo 2: Fallback su API ufficiale di Cfx.re
-                const response = await axios.get(`https://servers-live.fivem.net/api/servers/single/${CFX_ID}`, {
+            // =========================
+            // METODO 2 - CFX JOIN
+            // =========================
+            const joinResponse = await axios.head(
+                `https://cfx.re/join/${CFX_ID}`,
+                {
                     timeout: 5000,
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (response.data && response.data.Data) {
-                    playerCount = response.data.Data.clients || 0;
-                    isOnline = true;
-                    console.log(`[${new Date().toLocaleTimeString()}] Successo tramite CFX API: ${playerCount} giocatori.`);
+                    maxRedirects: 0,
+                    validateStatus: s => s >= 200 && s < 400
                 }
-            } catch (finalError) {
-                console.error(`[${new Date().toLocaleTimeString()}] Falliti tutti i metodi. Errore finale: ${finalError.message}`);
+            );
+
+            const realIp = joinResponse.headers['x-citizenfx-url']
+                ?.replace('http://', '')
+                ?.replace('/', '');
+
+            if (!realIp) throw new Error("IP non trovato");
+
+            const playersResponse = await axios.get(
+                `http://${realIp}players.json`,
+                { timeout: 5000 }
+            );
+
+            if (Array.isArray(playersResponse.data)) {
+                playerCount = playersResponse.data.length;
+                isOnline = true;
+            }
+
+            try {
+
+                const infoResponse = await axios.get(
+                    `http://${realIp}info.json`,
+                    { timeout: 5000 }
+                );
+
+                if (infoResponse.data) {
+
+                    serverName =
+                        infoResponse.data.vars?.sv_projectName ||
+                        infoResponse.data.vars?.sv_hostname ||
+                        'FiveM Server';
+
+                    maxPlayers =
+                        infoResponse.data.vars?.sv_maxClients || 0;
+                }
+
+            } catch (err) {}
+
+        } catch (e) {
+
+            console.warn(`[CFX] Fallito fallback`);
+
+            try {
+
+                // =========================
+                // METODO 3 - API CFX
+                // =========================
+                const response = await axios.get(
+                    `https://servers-live.fivem.net/api/servers/single/${CFX_ID}`,
+                    {
+                        timeout: 5000,
+                        headers: {
+                            'User-Agent': 'Mozilla/5.0',
+                            'Accept': 'application/json'
+                        }
+                    }
+                );
+
+                if (response.data?.Data) {
+
+                    isOnline = true;
+                    playerCount = response.data.Data.clients || 0;
+                    maxPlayers = response.data.Data.sv_maxclients || 0;
+                    serverName = response.data.Data.hostname || 'FiveM Server';
+                }
+
+            } catch (err) {
+
+                console.error("❌ Tutti i metodi falliti");
             }
         }
     }
 
     res.json({
         online: isOnline,
-        players: playerCount
+        players: playerCount,
+        maxPlayers: maxPlayers,
+        serverName: serverName,
+        ip: SERVER_ADDRESS,
+        cfx: CFX_ID,
+        timestamp: Date.now()
     });
 });
 
-app.listen(port, () => {
+// ===============================
+// TEST HOME
+// ===============================
+app.get('/', (req, res) => {
+    res.send('Backend FiveM attivo ✅');
+});
+
+// ===============================
+// START SERVER
+// ===============================
+app.listen(port, '0.0.0.0', () => {
     console.log(`================================================`);
-    console.log(`🚀 BACKEND SERVER AGGIORNATO (v2)`);
-    console.log(`📍 Endpoint: http://localhost:${port}/status`);
-    console.log(`🎮 Server FiveM: ${SERVER_ADDRESS}`);
-    console.log(`🆔 CFX ID Fallback: ${CFX_ID}`);
-    console.log(`================================================`);
-    console.log(`Lascia questa finestra aperta per far funzionare`);
-    console.log(`il conteggio giocatori sul sito.`);
-    console.log(`Il sistema userà automaticamente un metodo di`);
-    console.log(`emergenza se l'IP diretto non risponde.`);
+    console.log(`🚀 BACKEND FIVEM ONLINE`);
+    console.log(`🌐 http://localhost:${port}/status`);
+    console.log(`🎮 ${SERVER_ADDRESS}`);
     console.log(`================================================`);
 });
