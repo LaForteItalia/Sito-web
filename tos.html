@@ -1,119 +1,105 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Termini di Servizio | La Forte Italia</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-    <style>
-        .legal-page { padding-top: 120px; padding-bottom: 80px; }
-        .legal-container { max-width: 900px; margin: 0 auto; padding: 0 5%; }
-        .legal-box { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 40px; backdrop-filter: blur(10px); }
-        h1 { font-family: 'Rajdhani', sans-serif; font-size: 3rem; margin-bottom: 2rem; text-align: center; }
-        h2 { font-family: 'Rajdhani', sans-serif; color: var(--red-italy); margin: 30px 0 15px; }
-        p { margin-bottom: 15px; color: var(--text-muted); }
-        .lang-switch { display: flex; justify-content: center; gap: 20px; margin-bottom: 40px; }
-        .lang-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px 20px; border-radius: 50px; cursor: pointer; }
-        .lang-btn.active { background: var(--red-italy); border-color: var(--red-italy); }
-        .content-en { display: none; }
-    </style>
-</head>
-<body>
-    <header>
-        <nav>
-            <div class="logo-container">
-                <img src="img/Logo_Big.gif" alt="LFI Logo" class="nav-logo">
-                <span class="brand-name">LA FORTE ITALIA</span>
-            </div>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="regolamento.html">Regolamento</a></li>
-            </ul>
-        </nav>
-    </header>
+import express from 'express';
+import cors from 'cors';
+import axios from 'axios';
 
-    <div class="legal-page">
-        <div class="legal-container">
-            <div class="lang-switch">
-                <button class="lang-btn active" onclick="switchLang('it')">Italiano</button>
-                <button class="lang-btn" onclick="switchLang('en')">English</button>
-            </div>
+const app = express();
+const port = 3000;
 
-            <div id="it" class="legal-box content-it">
-                <h1>Termini di Servizio (TOS)</h1>
-                <p>Ultimo aggiornamento: 08 Maggio 2026</p>
+// ===============================
+// CONFIGURAZIONE SERVER
+// ===============================
+const SERVER_ADDRESS = '45.138.201.37:30120';
+const CFX_ID = '4odj5q';
 
-                <h2>1. Accettazione dei Termini</h2>
-                <p>Accedendo al server La Forte Italia e ai suoi servizi correlati, accetti di essere vincolato dai presenti termini e dal regolamento ufficiale del server.</p>
+app.use(cors());
+app.use(express.json());
 
-                <h2>2. Comportamento dell'Utente</h2>
-                <p>È vietato qualsiasi comportamento tossico, discriminatorio o volto a rovinare l'esperienza di gioco altrui. Il mancato rispetto delle regole può portare all'allontanamento permanente.</p>
+// ===============================
+// STATUS ENDPOINT
+// ===============================
+app.get('/status', async (req, res) => {
 
-                <h2>3. Donazioni</h2>
-                <p>Eventuali donazioni effettuate per il supporto del server sono volontarie e non rimborsabili, salvo diversa indicazione dello staff.</p>
+    try {
 
-                <h2>4. Modifiche ai Termini</h2>
-                <p>Ci riserviamo il diritto di modificare questi termini in qualsiasi momento. Gli utenti saranno avvisati tramite il nostro server Discord.</p>
-            </div>
+        console.log(`================================================`);
+        console.log(`[${new Date().toLocaleTimeString()}] Controllo FiveM`);
 
-            <div id="en" class="legal-box content-en">
-                <h1>Terms of Service (TOS)</h1>
-                <p>Last update: May 08, 2026</p>
-
-                <h2>1. Acceptance of Terms</h2>
-                <p>By accessing the La Forte Italia server and its related services, you agree to be bound by these terms and the server's official rules.</p>
-
-                <h2>2. User Conduct</h2>
-                <p>Any toxic, discriminatory behavior or behavior aimed at ruining others' gaming experience is prohibited. Failure to comply with rules may lead to permanent removal.</p>
-
-                <h2>3. Donations</h2>
-                <p>Any donations made for server support are voluntary and non-refundable, unless otherwise stated by the staff.</p>
-
-                <h2>4. Changes to Terms</h2>
-                <p>We reserve the right to modify these terms at any time. Users will be notified via our Discord server.</p>
-            </div>
-        </div>
-    </div>
-
-    <footer>
-        <div class="footer-content">
-            <div class="footer-info">
-                <img src="img/Roleicon.png" alt="LFI Small Logo">
-                <p>&copy; 2026 La Forte Italia. Tutti i diritti riservati.</p>
-                <p class="footer-donation-info">Per info e donazioni contattateci tramite ticket su <a href="https://discord.gg/6MVnwaDCDw" target="_blank">Discord</a>!</p>
-                <div class="footer-legal-links">
-                    <a href="privacy.html">Privacy Policy</a>
-                    <span>|</span>
-                    <a href="tos.html">TOS</a>
-                </div>
-            </div>
-            <div class="footer-links">
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-tiktok"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p class="made-by">Made with ❤️ By MaNu</p>
-            <p class="disclaimer">La Forte Italia is not affiliated with or endorsed by Take-Two, Rockstar North Interactive, or any other rights holder. All the used trademarks belong to their respective owners.</p>
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
-    <script>
-        function switchLang(lang) {
-            document.querySelectorAll('.legal-box').forEach(box => box.style.display = 'none');
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-
-            if(lang === 'it') {
-                document.querySelector('.content-it').style.display = 'block';
-                document.querySelectorAll('.lang-btn')[0].classList.add('active');
-            } else {
-                document.querySelector('.content-en').style.display = 'block';
-                document.querySelectorAll('.lang-btn')[1].classList.add('active');
+        // Recupera players.json
+        const playersResponse = await axios.get(
+            `http://${SERVER_ADDRESS}/players.json`,
+            {
+                timeout: 5000
             }
-        }
-    </script>
-</body>
-</html>
+        );
+
+        // Recupera info.json
+        const infoResponse = await axios.get(
+            `http://${SERVER_ADDRESS}/info.json`,
+            {
+                timeout: 5000
+            }
+        );
+
+        console.log('players.json:', playersResponse.data);
+
+        const playerCount = Array.isArray(playersResponse.data)
+            ? playersResponse.data.length
+            : 0;
+
+        const info = infoResponse.data || {};
+
+        const serverName =
+            info.vars?.sv_projectName ||
+            info.vars?.sv_hostname ||
+            'FiveM Server';
+
+        const maxPlayers =
+            Number(info.vars?.sv_maxClients) || 0;
+
+        res.json({
+            online: true,
+            players: playerCount,
+            maxPlayers: maxPlayers,
+            serverName: serverName,
+            ip: SERVER_ADDRESS,
+            cfx: CFX_ID,
+            timestamp: Date.now()
+        });
+
+    } catch (err) {
+
+        console.error('Errore:', err.message);
+
+        res.json({
+            online: false,
+            players: 0,
+            maxPlayers: 0,
+            serverName: 'Offline',
+            ip: SERVER_ADDRESS,
+            cfx: CFX_ID,
+            timestamp: Date.now()
+        });
+
+    }
+
+});
+
+// ===============================
+// HOME
+// ===============================
+app.get('/', (req, res) => {
+    res.send('Backend FiveM attivo ✅');
+});
+
+// ===============================
+// START SERVER
+// ===============================
+app.listen(port, '0.0.0.0', () => {
+
+    console.log(`================================================`);
+    console.log(`🚀 BACKEND FIVEM ONLINE`);
+    console.log(`🌐 http://localhost:${port}/status`);
+    console.log(`🎮 ${SERVER_ADDRESS}`);
+    console.log(`================================================`);
+
+});
