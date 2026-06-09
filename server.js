@@ -1,275 +1,151 @@
-import express from 'express';
-import cors from 'cors';
-import axios from 'axios';
-import FiveM from './fivem-server-api-main/index.mjs';
-
-const app = express();
-const port = 3000;
-
-// ===============================
-// CONFIGURAZIONE SERVER
-// ===============================
-const SERVER_ADDRESS = '45.138.201.37:30120';
-const CFX_ID = '4odj5q';
-
-const server = new FiveM(SERVER_ADDRESS, {
-    timeout: 5000
-});
-
-app.use(cors());
-app.use(express.json());
-
-// ===============================
-// STATUS ENDPOINT
-// ===============================
-app.get('/status', async (req, res) => {
-
-    let playerCount = 0;
-    let maxPlayers = 0;
-    let isOnline = false;
-    let serverName = 'Unknown';
-
-    console.log('\n================================================');
-    console.log(`[${new Date().toLocaleTimeString()}] Controllo FiveM`);
-
-    // ======================================================
-    // METODO 1 - IP DIRETTO
-    // ======================================================
-    try {
-
-        const status = await server.getServerStatus();
-
-        console.log('Status:', status);
-
-        if (status?.online) {
-
-            isOnline = true;
-
-            // Tentativo tramite libreria
-            try {
-
-                const players = await server.getPlayers();
-
-                console.log('getPlayers():', players);
-
-                if (Array.isArray(players)) {
-                    playerCount = players.length;
-                } else if (typeof players === 'number') {
-                    playerCount = players;
-                }
-
-            } catch (err) {
-
-                console.warn('getPlayers fallito:', err.message);
-
-            }
-
-            // Recupera info.json
-            try {
-
-                const infoResponse = await axios.get(
-                    `http://${SERVER_ADDRESS}/info.json`,
-                    { timeout: 5000 }
-                );
-
-                const info = infoResponse.data;
-
-                serverName =
-                    info?.vars?.sv_projectName ||
-                    info?.vars?.sv_hostname ||
-                    'FiveM Server';
-
-                maxPlayers =
-                    Number(info?.vars?.sv_maxClients) || 0;
-
-            } catch (err) {
-
-                console.warn('info.json non disponibile');
-
-            }
-
-            // Se i player sono ancora 0 prova players.json
-            if (playerCount === 0) {
-
-                try {
-
-                    const playersResponse = await axios.get(
-                        `http://${SERVER_ADDRESS}/players.json`,
-                        { timeout: 5000 }
-                    );
-
-                    console.log('players.json:', playersResponse.data);
-
-                    if (Array.isArray(playersResponse.data)) {
-                        playerCount = playersResponse.data.length;
-                    }
-
-                } catch (err) {
-
-                    console.warn('players.json non disponibile');
-
-                }
-            }
-        }
-
-    } catch (err) {
-
-        console.warn('[IP] Fallito:', err.message);
-
-    }
-
-    // ======================================================
-    // METODO 2 - CFX JOIN
-    // ======================================================
-    if (!isOnline) {
-
-        try {
-
-            console.log('Tentativo tramite CFX Join...');
-
-            const joinResponse = await axios.head(
-                `https://cfx.re/join/${CFX_ID}`,
-                {
-                    timeout: 5000,
-                    maxRedirects: 0,
-                    validateStatus: s => s >= 200 && s < 400
-                }
-            );
-
-            const realIp = joinResponse.headers['x-citizenfx-url']
-                ?.replace('http://', '')
-                ?.replace('/', '');
-
-            console.log('IP reale:', realIp);
-
-            if (!realIp) {
-                throw new Error('IP non trovato');
-            }
-
-            isOnline = true;
-
-            // players.json
-            try {
-
-                const playersResponse = await axios.get(
-                    `http://${realIp}/players.json`,
-                    { timeout: 5000 }
-                );
-
-                if (Array.isArray(playersResponse.data)) {
-                    playerCount = playersResponse.data.length;
-                }
-
-            } catch (err) {
-
-                console.warn('players.json fallback fallito');
-
-            }
-
-            // info.json
-            try {
-
-                const infoResponse = await axios.get(
-                    `http://${realIp}/info.json`,
-                    { timeout: 5000 }
-                );
-
-                const info = infoResponse.data;
-
-                serverName =
-                    info?.vars?.sv_projectName ||
-                    info?.vars?.sv_hostname ||
-                    'FiveM Server';
-
-                maxPlayers =
-                    Number(info?.vars?.sv_maxClients) || 0;
-
-            } catch (err) {
-
-                console.warn('info.json fallback fallito');
-
-            }
-
-        } catch (err) {
-
-            console.warn('[CFX JOIN] Fallito:', err.message);
-
-        }
-    }
-
-    // ======================================================
-    // METODO 3 - API UFFICIALE CFX
-    // ======================================================
-    if (!isOnline) {
-
-        try {
-
-            console.log('Tentativo API CFX...');
-
-            const response = await axios.get(
-                `https://servers-live.fivem.net/api/servers/single/${CFX_ID}`,
-                {
-                    timeout: 5000,
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0',
-                        Accept: 'application/json'
-                    }
-                }
-            );
-
-            const data = response.data?.Data;
-
-            if (data) {
-
-                isOnline = true;
-
-                playerCount = data.clients || 0;
-                maxPlayers = data.sv_maxclients || 0;
-                serverName = data.hostname || 'FiveM Server';
-            }
-
-        } catch (err) {
-
-            console.error('API CFX fallita:', err.message);
-
-        }
-    }
-
-    console.log('Risultato:', {
-        isOnline,
-        playerCount,
-        maxPlayers,
-        serverName
-    });
-
-    res.json({
-        online: isOnline,
-        players: playerCount,
-        maxPlayers,
-        serverName,
-        ip: SERVER_ADDRESS,
-        cfx: CFX_ID,
-        timestamp: Date.now()
-    });
-
-});
-
-// ===============================
-// HOME
-// ===============================
-app.get('/', (req, res) => {
-    res.send('Backend FiveM attivo ✅');
-});
-
-// ===============================
-// START SERVER
-// ===============================
-app.listen(port, '0.0.0.0', () => {
-
-    console.log('================================================');
-    console.log('🚀 BACKEND FIVEM ONLINE');
-    console.log(`🌐 http://localhost:${port}/status`);
-    console.log(`🎮 ${SERVER_ADDRESS}`);
-    console.log('================================================');
-
-});
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Forte Italia | FiveM Server</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+<body>
+    <div id="particles-js"></div>
+    <header>
+        <nav>
+            <div class="logo-container">
+                <img src="img/Logo_Big.gif" alt="LFI Logo" class="nav-logo">
+                <span class="brand-name">LA FORTE ITALIA</span>
+            </div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#features">Caratteristiche</a></li>
+                <li><a href="regolamento.html">Regolamento</a></li>
+                <li><a href="https://discord.gg/6MVnwaDCDw" target="_blank" class="discord-btn"><i class="fab fa-discord"></i> Discord</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="video-container">
+            <div class="video-overlay"></div>
+            <!-- Placeholder per un eventuale video di sfondo -->
+            <img src="img/background.jpg" alt="Background" class="hero-bg-img">
+        </div>
+        <div class="hero-content" data-aos="zoom-out" data-aos-duration="1500">
+            <h1 class="glitch-text"><span class="green">LA</span> <span class="white">FORTE</span> <span class="red">ITALIA</span></h1>
+            <p class="hero-subtitle">Benvenuti nel cuore del Roleplay italiano. Qualità, serietà e divertimento senza limiti.</p>
+            <div class="hero-btns">
+                <a href="https://cfx.re/join/4odj5q" class="btn btn-primary btn-glow">GIOCA ORA</a>
+                <a href="#features" class="btn btn-secondary">SCOPRI DI PIÙ</a>
+            </div>
+            <div class="stats-container">
+                <div class="stat-item" data-aos="fade-up" data-aos-delay="400">
+                    <span class="stat-number"><span class="online-dot"></span> <span class="players-count">0</span></span>
+                    <span class="stat-label">Giocatori Online</span>
+                </div>
+                <div class="stat-item" data-aos="fade-up" data-aos-delay="500">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Uptime Server</span>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+            <div class="arrows">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-text" data-aos="fade-right">
+                    <h2>Un'esperienza <span class="white">Immersiva</span></h2>
+                    <p>La Forte Italia non è solo un server, è una seconda vita. Abbiamo creato un ecosistema dove ogni tua scelta ha un peso reale sul mondo che ti circonda.</p>
+                    <ul class="check-list">
+                        <li><i class="fas fa-check-circle"></i> Script Esclusivi</li>
+                        <li><i class="fas fa-check-circle"></i> Economia Bilanciata</li>
+                        <li><i class="fas fa-check-circle"></i> Eventi Settimanali</li>
+                    </ul>
+                </div>
+                <div class="about-img" data-aos="fade-left">
+                    <img src="img/Logo_Big.gif" alt="Logo LFI" class="floating-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <h2 data-aos="fade-up">Perché scegliere noi?</h2>
+        <div class="features-grid">
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="card-icon"><i class="fas fa-car"></i></div>
+                <h3>Veicoli Realistici</h3>
+                <p>Ampia gamma di veicoli moddati e personalizzati con handling realistici.</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="card-icon"><i class="fas fa-users"></i></div>
+                <h3>Community Attiva</h3>
+                <p>Uno staff sempre presente e una community accogliente e rispettosa.</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="card-icon"><i class="fas fa-briefcase"></i></div>
+                <h3>Lavori Unici</h3>
+                <p>Molteplici lavori legali e illegali con script esclusivi e ottimizzati.</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>Server Ottimizzato</h3>
+                <p>FPS stabili e lag ridotto al minimo per la miglior esperienza di gioco.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section" data-aos="fade-in">
+        <div class="cta-content" data-aos="zoom-in">
+            <h2>Pronto ad iniziare la tua storia?</h2>
+            <p>Unisciti a centinaia di giocatori che hanno già scelto La Forte Italia.</p>
+            <a href="https://discord.gg/6MVnwaDCDw" class="btn btn-discord btn-glow"><i class="fab fa-discord"></i> ENTRA NEL DISCORD</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-info">
+                <img src="img/Roleicon.png" alt="LFI Small Logo">
+                <p>&copy; 2026 La Forte Italia. Tutti i diritti riservati.</p>
+                <p class="footer-donation-info">Per info e donazioni contattateci tramite ticket su <a href="https://discord.gg/6MVnwaDCDw" target="_blank">Discord</a>!</p>
+                <div class="footer-legal-links">
+                    <a href="privacy.html">Privacy Policy</a>
+                    <span>|</span>
+                    <a href="tos.html">TOS</a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-tiktok"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="made-by">Made with By La Forte Italia</p>
+            <p class="disclaimer">La Forte Italia is not affiliated with or endorsed by Take-Two, Rockstar North Interactive, or any other rights holder. All the used trademarks belong to their respective owners.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
