@@ -3,875 +3,300 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Regolamento | La Forte Italia</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="[cdnjs.cloudflare.com](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css)">
-    <link rel="preconnect" href="[fonts.googleapis.com](https://fonts.googleapis.com)">
-    <link rel="preconnect" href="[fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
-    <link href="[fonts.googleapis.com](https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap)" rel="stylesheet">
-    <link href="[unpkg.com](https://unpkg.com/aos@2.3.1/dist/aos.css)" rel="stylesheet">
+    <title>Regolamento Imperium RP</title>
+    <!-- FontAwesome per le icone -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Gli stili sono stati spostati in style.css */
+        :root {
+            --bg-principal: #0d0e12;
+            --bg-sidebar: #13161c;
+            --bg-card: #181c24;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-color: #ffb703;
+            --border-color: #262c3a;
+            
+            /* Colori Fazioni */
+            --color-staff: #ef4444;
+            --color-general: #3b82f6;
+            --color-crim: #8b5cf6;
+            --color-fdo: #06b6d4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-principal);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* BARRA LATERALE (SIDEBAR) */
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sidebar-brand {
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            border-bottom: 1px solid var(--border-color);
+            letter-spacing: 1px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            transform: translateX(5px);
+        }
+
+        /* CONTENUTO PRINCIPALE */
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+            width: calc(100% - 260px);
+            max-width: 1200px;
+        }
+
+        .welcome-header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px;
+            background: linear-gradient(135deg, #181c24 0%, #13161c 100%);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .welcome-header h1 {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        /* BLOCCHI DI SEZIONE */
+        .section-block {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            scroll-margin-top: 20px; /* Evita che il titolo venga coperto al click del link */
+        }
+
+        .section-header {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Varianti Colore Header */
+        .color-staff { color: var(--color-staff); border-bottom-color: var(--color-staff); }
+        .color-general { color: var(--color-general); border-bottom-color: var(--color-general); }
+        .color-crim { color: var(--color-crim); border-bottom-color: var(--color-crim); }
+        .color-fdo { color: var(--color-fdo); border-bottom-color: var(--color-fdo); }
+
+        /* GRIGLIE E PROFILI */
+        .staff-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .staff-card {
+            background-color: var(--bg-sidebar);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .staff-role {
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .staff-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* LISTE E REGOLE */
+        ul {
+            list-style: none;
+        }
+
+        li {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #d1d5db;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        li i {
+            margin-top: 5px;
+            color: var(--accent-color);
+            font-size: 0.9rem;
+        }
+
+        .sub-section-title {
+            font-size: 1.2rem;
+            color: var(--text-main);
+            margin: 25px 0 15px 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .main-content { margin-left: 0; width: 100%; padding: 20px; }
+        }
     </style>
 </head>
 <body>
-    <div id="particles-js"></div>
-    <header>
-        <nav>
-            <div class="logo-container">
-                <img src="img/Logo_Big.gif" alt="LFI Logo" class="nav-logo">
-                <span class="brand-name">LA FORTE ITALIA</span>
+
+    <!-- BARRA LATERALE (SIDEBAR) -->
+    <div class="sidebar">
+        <div class="sidebar-brand">IMPERIUM RP</div>
+        <a href="#home"><i class="fas fa-home"></i> Home</a>
+        <a href="#staff"><i class="fas fa-user-shield"></i> Staff</a>
+        <a href="#regolamento-generale"><i class="fas fa-gavel"></i> Regolamento Generale</a>
+        <a href="#ingaggio-rapine"><i class="fas fa-crosshairs"></i> Ingaggio Rapine</a>
+        <a href="#gran-tavola"><i class="fas fa-crown"></i> La Gran Tavola</a>
+        <a href="#regolamento-rapine"><i class="fas fa-mask"></i> Regolamento Rapine</a>
+        <a href="#regolamento-fdo"><i class="fas fa-shield-alt"></i> Regolamento FDO</a>
+    </div>
+
+    <!-- CONTENUTO PRINCIPALE -->
+    <div class="main-content">
+
+        <!-- SEZIONE HOME -->
+        <div class="welcome-header" id="home">
+            <h1>Benvenuto su Imperium RP</h1>
+            <p>Il punto di riferimento per il Roleplay puro. Rispetta le regole, crea la tua storia.</p>
+        </div>
+
+        <!-- SEZIONE STAFF -->
+        <div class="section-block" id="staff">
+            <div class="section-header color-staff">
+                <i class="fas fa-users"></i> ORGANIGRAMMA STAFF
             </div>
-            <div class="menu-toggle">
-                <i class="fas fa-bars"></i>
+            <div class="staff-grid">
+                <div class="staff-card"><div class="staff-role">👑 Fondatore</div><div class="staff-name">Dany</div></div>
+                <div class="staff-card"><div class="staff-role">👑 Fondatore</div><div class="staff-name">Sasy</div></div>
+                <div class="staff-card"><div class="staff-role">⭐ Gestore SS</div><div class="staff-name">Villogian</div></div>
+                <div class="staff-card"><div class="staff-role">🛠️ Resp. Staff</div><div class="staff-name">Niko</div></div>
+                <div class="staff-card"><div class="staff-role">🧰 Mod - S.Mod</div><div class="staff-name">Villogian</div></div>
+                <div class="staff-card"><div class="staff-role">👔 Helper</div><div class="staff-name">Gisess</div></div>
+            </div>
+        </div>
+
+        <!-- SEZIONE REGOLAMENTO GENERALE -->
+        <div class="section-block" id="regolamento-generale">
+            <div class="section-header color-general">
+                <i class="fas fa-book"></i> REGOLAMENTO GENERALE
             </div>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="index.html#features">Caratteristiche</a></li>
-                <li><a href="regolamento.html">Regolamento</a></li>
-                <li><a href="[discord.gg](https://discord.gg/6MVnwaDCDw)" target="_blank" class="discord-btn"><i class="fab fa-discord"></i> Discord</a></li>
+                <li><i class="fas fa-chevron-right"></i> <strong>Riconoscimento da Mascherati:</strong> È assolutamente vietato riconoscere un cittadino se quest'ultimo indossa una maschera che copre interamente il volto. L'identificazione può avvenire solo tramite documenti o elementi unici non occultabili.</li>
+                <li><i class="fas fa-chevron-right"></i> <strong>Utilizzo della Chat Assistenza:</strong> La chat di assistenza (ticket o report in-game) deve essere utilizzata esclusivamente per problematiche tecniche o segnalazioni urgenti. Ogni abuso o spam verrà sanzionato.</li>
+                <li><i class="fas fa-chevron-right"></i> <strong>Rispetto dei Ruoli e dello Staff:</strong> Le decisioni prese dallo Staff sono insindacabili all'interno dell'azione. Eventuali contestazioni vanno esposte in sede privata (ticket) a mente fredda, mantenendo un tono civile.</li>
             </ul>
-        </nav>
-    </header>
+        </div>
 
-    <main class="rules-page">
-        <div class="rules-container">
-            <div class="rules-header" data-aos="fade-down">
-                <h1 class="page-title"><span class="green">REGO</span><span class="white">LAME</span><span class="red">NTO</span></h1>
-                <p class="rules-subtitle">NON GIOCARE PER VINCERE UNA SCENA , GIOCA PER CREARE UNA STORIA CHE VALGA LA PENA DI ESSERE RACCONTATA.</p>
+        <!-- SEZIONE INGAGGIO RAPINE -->
+        <div class="section-block" id="ingaggio-rapine">
+            <div class="section-header color-crim">
+                <i class="fas fa-percentage"></i> REGOLE DI INGAGGIO — RAPINE
             </div>
-
-            <div class="rules-content-wrapper">
-                <aside class="rules-sidebar" data-aos="fade-right">
-                    <div class="rules-nav">
-                        <a href="#staff"><i class="fas fa-users-cog"></i> Staff</a>
-                        <a href="#generale"><i class="fas fa-gavel"></i> Generale</a>
-                        <a href="#chat"><i class="fas fa-comments"></i> Chat</a>
-                        <a href="#zone"><i class="fas fa-map-marked-alt"></i> Zone</a>
-                        <a href="#armi"><i class="fas fa-gun"></i> Armi</a>
-                        <a href="#mafie"><i class="fas fa-user-secret"></i> Mafie</a>
-                        <a href="#gran-tavola"><i class="fas fa-crown"></i> Gran Tavola</a>
-                        <a href="#freeroam"><i class="fas fa-car-side"></i> Free-Roam</a>
-                        <a href="#illegali"><i class="fas fa-skull"></i> Azioni Illegali</a>
-                        <a href="#legali"><i class="fas fa-shield-alt"></i> Fazioni Legali</a>
-                        <a href="#rapine"><i class="fas fa-money-bill-wave"></i> Rapine</a>
-                        <a href="#medici"><i class="fas fa-briefcase-medical"></i> Medici</a>
-                        <a href="#fdo"><i class="fas fa-building"></i> FDO</a>
-                        <a href="#perma"><i class="fas fa-skull-crossbones"></i> Permadeath</a>
-                        <a href="#cheats"><i class="fas fa-bug"></i> Cheats</a>
-                        <a href="#convoglio"><i class="fas fa-truck"></i> Convoglio</a>
-                        <a href="#donatori"><i class="fas fa-heart"></i> Donatori</a>
-                    </div>
-                </aside>
-
-                <div class="rules-main-content">
-                    <!-- STAFF -->
-             <section id="staff" class="rule-section" data-aos="fade-up">
-    <h2><i class="fas fa-users-cog"></i> Staff del Server</h2>
-    <p style="color: var(--text-muted); margin-bottom: 15px;">
-        Lo staff di La Forte Italia è Staff su Discord, in game siamo tutti uguali.
-    </p>
-
-    <div class="weapons-grid">
-
-        <div class="weapon-cat">
-            <h4>👑 Owner</h4>
+            <p style="margin-bottom: 20px; color: var(--text-muted);">Percentuali di perdita dei beni per le Forze dell'Ordine (FDO) in caso di sconfitta in un'azione criminale:</p>
             <ul>
-                <li>DarknessTtv</li>
-                <li>ZuTotò</li>
-                <li>LucaExe</li>
-                <li>ErColonnello</li>
+                <li><i class="fas fa-gavel"></i> <strong>Rapina in Banca (Centrale / Principale):</strong> Se le FDO perdono l'azione, l'arma principale utilizzata durante il conflitto viene considerata persa (requisita dai criminali) al 100%.</li>
+                <li><i class="fas fa-gavel"></i> <strong>Rapina ai Negozi / Gioielleria:</strong> In caso di sconfitta, la percentuale di perdita dell'arma principale è fissata al 50%. La decisione finale sul sequestro effettivo dell'arma spetta alla fazione criminale vincitrice.</li>
             </ul>
         </div>
 
-        <div class="weapon-cat">
-            <h4>🛡️ Responsabile Staff</h4>
+        <!-- SEZIONE LA GRAN TAVOLA -->
+        <div class="section-block" id="gran-tavola">
+            <div class="section-header color-crim">
+                <i class="fas fa-gavel"></i> LA GRAN TAVOLA
+            </div>
             <ul>
-                <li>Tonino</li>
-                <li>IlRocco</li>
+                <li><i class="fas fa-chevron-right"></i> La Gran Tavola rappresenta la massima autorità criminale della città; mettersi contro significa non avere paura della morte.</li>
+                <li><i class="fas fa-chevron-right"></i> Imposizione delle regole mafiose e di rispetto comune in tutto il territorio.</li>
+                <li><i class="fas fa-chevron-right"></i> Ogni sgarro alla Gran Tavola può sancire un CK (Character Kill) diretto, previa approvazione dello Staff.</li>
             </ul>
         </div>
 
-        <div class="weapon-cat">
-            <h4>⭐ Gestore SS</h4>
+        <!-- SEZIONE REGOLAMENTO RAPINE -->
+        <div class="section-block" id="regolamento-rapine">
+            <div class="section-header color-crim">
+                <i class="fas fa-skull"></i> REGOLAMENTO RAPINE
+            </div>
             <ul>
-                <li>Vollogian</li>
+                <li><i class="fas fa-chevron-right"></i> Non si può rapinare cibo e acqua, ma si può obbligare il soggetto a mangiare e bere davanti a voi prima di lasciarlo andare o completare l'azione.</li>
+                <li><i class="fas fa-chevron-right"></i> Vietato abusare delle meccaniche di loot e delle animazioni durante i conflitti a fuoco.</li>
             </ul>
         </div>
 
-        <div class="weapon-cat">
-            <h4>🚔 Gestore FDO</h4>
+        <!-- NUOVA SEZIONE REGOLAMENTO FDO -->
+        <div class="section-block" id="regolamento-fdo">
+            <div class="section-header color-fdo">
+                <i class="fas fa-shield-alt"></i> REGOLAMENTO INTERNO FDO
+            </div>
             <ul>
-                <li>ErColonnello</li>
-                <li>Renny Cannuccia</li>
-            </ul>
-        </div>
-
-        <div class="weapon-cat">
-            <h4>💀 Gestore Criminalità</h4>
-            <ul>
-                <li>DarknessTtv</li>
-            </ul>
-        </div>
-
-        <div class="weapon-cat">
-            <h4>⚖️ Admin</h4>
-            <ul>
-                <li>Peppe22</li>
-                <li>Lincoln</li>
-            </ul>
-        </div>
-
-        <div class="weapon-cat">
-            <h4>🧰 Mod - S.Mod</h4>
-            <ul>
-                <li>Villogian</li>
-                <li>-Renny-</li>
-                <li>BabyZurigo</li>
-                <li>Daniele</li>
-                <li>Domenico</li>
+                <li><i class="fas fa-chevron-right"></i> Durante un conflitto a fuoco, le Forze dell'Ordine devono sempre dare priorità alla salvaguardia della vita dei civili e dei colleghi rispetto alla cattura dei sospetti.</li>
+                <li><i class="fas fa-chevron-right"></i> È severamente vietato l'utilizzo di equipaggiamento letale o tattico pesante al di fuori delle zone di alto rischio o senza l'esplicita autorizzazione del Comando (es. Alto Comando / Capo Fazione).</li>
+                <li><i class="fas fa-chevron-right"></i> Durante una rapina o un rapimento, l'obiettivo principale sarà quello di liberare e mettere in salvo l'ostaggio. L'arresto dei criminali sarà sempre in secondo piano.</li>
             </ul>
         </div>
 
     </div>
-</section>
-                    <!-- REGOLAMENTO GENERALE -->
-                    <section id="generale" class="rule-section" data-aos="fade-up">
-                        <h2><i class="fas fa-gavel"></i> Regolamento Generale</h2>
-                        <ul class="rule-list">
-                            <li><i class="fas fa-chevron-right"></i> <strong>RDM:</strong> È severamente vietato fare Random Deathmatch ovvero commettere un omicidio senza valido motivo RP.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>VDM:</strong> È severamente vietato fare Vehicle Deathmatch ovvero uccidere o investire volontariamente un player con un veicolo.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>NO FEAR:</strong> È severamente vietato sottovalutare il pericolo o far finta che non esista.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>FAIL RP:</strong> Azioni irrealistiche o forzate che nella vita reale non potrebbero verificarsi sono vietate.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>METAGAME:</strong> È vietato riportare fatti OOC in IC e viceversa, o riconoscere persone da maschere/vestiti.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>STREAM SNIPING:</strong> È severamente vietato guardare la live di un altro player per trarne vantaggio.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>USCIRE DALL'RP:</strong> Ogni azione deve essere conclusa. Eventuali infrazioni si discutono dopo in assistenza.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>POWERGAME:</strong> Vietato sfruttare meccaniche di gioco irrealistiche (es. supercar in montagna).</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>SLOG IN AZIONE:</strong> Vietato uscire dal gioco durante un'azione in corso.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>REVENGE KILL:</strong> Vietato vendicarsi subito dopo essere stati uccisi (senza memoria).</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>HACK & BUG ABUSE:</strong> Puniti con ban non revocabile.</li>
-                        </ul>
 
-                        <h3>Limiti di Velocità (Powergame)</h3>
-                        <div class="speed-table-container">
-                            <table class="speed-table">
-                                <thead>
-                                    <tr>
-                                        <th>Veicolo</th>
-                                        <th>Asfaltata</th>
-                                        <th>Sterrata</th>
-                                        <th>Offroad</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Utilitari</td>
-                                        <td>No Limite</td>
-                                        <td>60 Km/h</td>
-                                        <td>Vietato</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Fuoristrada 4x4</td>
-                                        <td>No Limite</td>
-                                        <td>80 Km/h</td>
-                                        <td>40 Km/h</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Moto Offroad</td>
-                                        <td>No Limite</td>
-                                        <td>100 Km/h</td>
-                                        <td>60 Km/h</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Supercar</td>
-                                        <td>No Limite</td>
-                                        <td>40 Km/h</td>
-                                        <td>Vietato</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </section>
-
-                    <!-- REGOLAMENTO CHAT -->
-                    <section id="chat" class="rule-section" data-aos="fade-up">
-                        <h2><i class="fas fa-comments"></i> Regolamento Chat</h2>
-                        <ul class="rule-list">
-                            <li><i class="fas fa-chevron-right"></i> <strong>/azione:</strong> Da usare solo per fine azione o info critiche sull'azione.</li>
-                        </ul>
-                    </section>
-
-                    <!-- ZONE -->
-                    <section id="zone" class="rule-section" data-aos="fade-up">
-                        <h2><i class="fas fa-map-marked-alt"></i> Zone Safe, Semi-Safe e Rosse</h2>
-
-                        <h3>Zone Safe (Azioni Illegali VIETATE)</h3>
-                        <ul class="rule-list">
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                <strong>Ospedale:</strong> È considerata zona safe sia dentro che fuori.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                <strong>Zona Spawn:</strong> Punto di ingresso iniziale del personaggio.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                <strong>Garage Centrale:</strong> Safe solo all'interno del parcheggio. 
-                                Per rapire una persona nella zona centrale il raggio minimo deve essere di 300 metri.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                <strong>Edifici Protetti:</strong> Tribunale, Municipio, negozi di vestiti elettronica e tutte le attività non si può compiere azioni illegali entro un raggio di 300 metri.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                <strong>Punti Raccolta Lavori NO WL:</strong> Tutti i punti raccolta dei lavori No Whitelist sono considerati safe zone.
-                            </li>
-                        </ul>
-
-                        <h3>Zone Semi-Safe</h3>
-                        <p>
-                            In queste aree le azioni illegali sono consentite solo previa approvazione dello staff tramite ticket.
-                        </p>
-
-                        <ul class="rule-list">
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                <strong>Questura</strong>
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                <strong>Caserma dei Carabinieri</strong>
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                <strong>Caserma della Guardia di Finanza</strong>
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                <strong>Case Fazione</strong>
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                <strong>Sede del Governo</strong>
-                            </li>
-                        </ul>
-
-                        <p class="rule-warning">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            Qualsiasi abuso delle Safe Zone per evitare conseguenze RP sarà considerato <strong>GRAVE FAIL RP</strong>.
-                        </p>
-
-                        <h3>Zone Rosse (Ingaggio a Vista)</h3>
-                        <ul class="rule-list">
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                <strong>Punti Raccolta/Processo Droghe:</strong> Zone ad ingaggio libero.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                <strong>Case Mafia:</strong> Accessibili solo sotto ticket con rischio PERMA per chi attacca.
-                                Il primo ingaggio è consentito esclusivamente da parte di chi ha aperto il ticket.
-                            </li>
-                        </ul>
-
-                        <p class="rule-warning">
-                            <i class="fas fa-exclamation-circle"></i>
-                            Non rispettare queste regole sarà considerato <strong>NO FEAR</strong>.
-                        </p>
-                    </section>
-
-                    <!-- ARMI -->
-                    <section id="armi" class="rule-section" data-aos="fade-up">
-                        <h2><i class="fas fa-gun"></i> Armi Consentite</h2>
-                        <div class="weapons-grid">
-                            <div class="weapon-cat">
-                                <h4>Cittadini</h4>
-                                <ul>
-                                    <li>Coltello, Mazza, Tirapugni</li>
-                                    <li>SNS, 9MM</li>
-                                </ul>
-                            </div>
-                            <div class="weapon-cat">
-                                <h4>Criminali</h4>
-                                <ul>
-                                    <li>9MM MK2</li>
-                                    <li>PDW, UZI</li>
-                                    <li>AK-47</li>
-                                </ul>
-                            </div>
-                            <div class="weapon-cat">
-                                <h4>FDO</h4>
-                                <ul>
-                                    <li>Taser</li>
-                                    <li>SMG</li>
-                                    <li>Fucile d'ordinanza (M4)</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- MAFIE -->
-                    <section id="mafie" class="rule-section" data-aos="fade-up">
-                        <h2><i class="fas fa-user-ninja"></i> Regolamento Mafie</h2>
-                        <ul class="rule-list">
-                            <li><i class="fas fa-chevron-right"></i> <strong>Membri:</strong> Numero massimo illimitato.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>Alleanze:</strong> Vietato allenze.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>Wipe:</strong> Obbligatorio in caso di uscita dalla mafia per vita civile.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>Dopo wipe:</strong> 7 giorni di lavoro civile.</li>
-                        </ul>
-                    </section>
-
-                    <!-- GRAN TAVOLA -->
-                    <section id="gran-tavola" class="rule-section" data-aos="fade-up">
-                        <h2><i class="fas fa-crown"></i> La Gran Tavola</h2>
-                        <p style="color: var(--text-muted); margin-bottom: 15px;">Rappresenta il vertice assoluto della gerarchia criminale mettersi contro significa npn avere paura della mafia piu grossa in città.</p>
-                        <ul class="rule-list">
-                            <li><i class="fas fa-chevron-right"></i> <strong>Autorità:</strong> Ha l'ultima parola su ogni decisione criminale.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>Controllo:</strong> Gestisce il traffico di armi e droga in città.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>Rispetto:</strong> Andare contro la Gran Tavola comporta gravi sanzioni IC.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>imposizione:</strong> Mettersi contro il membro supremo e mancare di rispetto porta gravi sanzioni in IC perma consentiti.</li>
-                        </ul>
-                    </section>
-
-                    <!-- FREE ROAM -->
-                    <section id="freeroam" class="rule-section" data-aos="fade-up">
-                        <h2><i class="fas fa-car-crash"></i> Azioni Free-Roam</h2>
-                        <ul class="rule-list">
-                            <li><i class="fas fa-chevron-right"></i> <strong>Partecipanti:</strong> Nessun limite di persone.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>Armi:</strong> Solo pistole e micro uzi (criminali) / pistole e SMG (FDO).</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>Rapimenti:</strong> Minimo 4 FDO online per civili, 6 FDO per agenti.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>Disingaggio:</strong> Oltre i 300 metri si è fuori dall'azione.</li>
-                        </ul>
-                    </section>
-
-                    <!-- AZIONI ILLEGALI -->
-                    <section id="rapine" class="rule-section" data-aos="fade-up">
-    <h2><i class="fas fa-hand-holding-usd"></i> Regole di Ingaggio — Rapine</h2>
-    <table class="rule-table">
-        <thead>
-            <tr>
-                <th>Regola</th>
-                <th>Dettagli</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><i class="fas fa-clock"></i> <strong>Tempo di negoziazione</strong></td>
-                <td>15 minuti dalla prima comunicazione</td>
-            </tr>
-            <tr>
-                <td><i class="fas fa-door-open"></i> <strong>Irruzione polizia</strong></td>
-                <td>Solo dopo i 15 minuti, a discrezione delle FDO</td>
-            </tr>
-            <tr>
-                <td><i class="fas fa-shield-alt"></i> <strong>Protezione ostaggi</strong></td>
-                <td>Durante i 15 minuti, nessun movimento tattico</td>
-            </tr>
-            <tr>
-                <td><i class="fas fa-balance-scale"></i> <strong>Vale per entrambe le parti</strong></td>
-                <td>Anche i rapinatori devono rispettare la tregua</td>
-            </tr>
-        </tbody>
-    </table>
-</section>
-
-<section id="illegali" class="rule-section" data-aos="fade-up">
-    <h2><i class="fas fa-mask"></i> Azioni Illegali</h2>
-    <ul class="rule-list">
-        <li><i class="fas fa-chevron-right"></i> <strong>Casco:</strong> VIETATO l'utilizzo del casco in tutte le azioni illegali.</li>
-        <li><i class="fas fa-chevron-right"></i> <strong>Sparare da Veicolo:</strong> Solo passeggeri sotto i 150 km/h.</li>
-        <li><i class="fas fa-chevron-right"></i> <strong>Cespugli:</strong> Vietato nascondersi o ingaggiare dai cespugli (Powergame).</li>
-        <li><i class="fas fa-chevron-right"></i> <strong>Loot:</strong> Vietato lootare i poliziotti nelle rapine (tranne se incoscienti, solo munizioni) il 50%.</li>
-        <li><i class="fas fa-chevron-right"></i> <strong>Azione:</strong> Dopo ogni azione il morto non può ricordare niente per 1 ora se spawn in ospedale, il caso contrario che arrivano i medici 30 min.</li>
-        <li><i class="fas fa-chevron-right"></i> <strong>Rapimento FDO:</strong> È vietato rapire qualsiasi membro delle Forze dell'Ordine senza un valido motivo RP e senza l'apertura di un ticket autorizzativo.</li>
-    </ul>
-</section>
-
-
-                    <!-- FAZIONI LEGALI -->
-                    <section id="legali" class="rule-section" data-aos="fade-up">
-                        <h2><i class="fas fa-building"></i> Fazioni Legali</h2>
-                        <ul class="rule-list">
-                            <li><i class="fas fa-chevron-right"></i> <strong>Limiti:</strong> Polizia (40), Carabinieri (40), Finanza (40), Medici (40).</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>Assalti:</strong> Assalto alla casa fazione comporta Permadeath in caso di sconfitta.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>Inattività:</strong> Azienda all'asta dopo 1 settimana di inattività.</li>
-                        </ul>
-                    </section>
-
-                    <!-- RAPINE -->
-                    <section id="rapine" class="rule-section" data-aos="fade-up">
-                        <h2><i class="fas fa-vault"></i> Regolamento Rapine</h2>
-
-                        <div class="table-responsive">
-                            <table class="rule-table">
-                                <thead>
-                                    <tr>
-                                        <th>Rapina</th>
-                                        <th>Criminali</th>
-                                        <th>FDO</th>
-                                        <th>Ostaggi</th>
-                                        <th>Gang</th>
-                                        <th>Ticket</th>
-                                        <th>Armi Consentite</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    <tr>
-                                        <td><strong>ATM</strong></td>
-                                        <td>2</td>
-                                        <td>3</td>
-                                        <td>0</td>
-                                        <td>NO</td>
-                                        <td>NO</td>
-                                        <td>Tutte le Pistole</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td><strong>Furto in Casa</strong></td>
-                                        <td>3</td>
-                                        <td>4</td>
-                                        <td>0</td>
-                                        <td>NO</td>
-                                        <td>NO</td>
-                                        <td>Tutte le Pistole</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td><strong>Furto di Veicolo</strong></td>
-                                        <td>2</td>
-                                        <td>3</td>
-                                        <td>0</td>
-                                        <td>NO</td>
-                                        <td>NO</td>
-                                        <td>Tutte le Pistole</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td><strong>Negozietto</strong></td>
-                                        <td>2</td>
-                                        <td>3</td>
-                                        <td>1</td>
-                                        <td>NO</td>
-                                        <td>NO</td>
-                                        <td>Tutte le Pistole</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td><strong>Banca LFI</strong></td>
-                                        <td>3</td>
-                                        <td>4 (min 3)</td>
-                                        <td>1</td>
-                                        <td>NO</td>
-                                        <td>NO</td>
-                                        <td>Pistole, SMG, UZI</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td><strong>Gioielleria</strong></td>
-                                        <td>6</td>
-                                        <td>7 (min 2)</td>
-                                        <td>1</td>
-                                        <td>1</td>
-                                        <td>SI</td>
-                                        <td>Pistole, SMG, UZI</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td><strong>Banca Centrale</strong></td>
-                                        <td>Illimitati</td>
-                                        <td>Illimitati</td>
-                                        <td>4 (min 2)</td>
-                                        <td>2</td>
-                                        <td>SI</td>
-                                        <td>Tutte (No Cecchino)</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </section>
-
-                    <!-- MEDICI -->
-                    <section id="medici" class="rule-section" data-aos="fade-up">
-                        <h2><i class="fas fa-user-md"></i> 🚑 Regolamento Medici 🚑</h2>
-
-                        <ul class="rule-list">
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                È <strong>SEVERAMENTE VIETATO</strong> a qualsiasi grado della Croce Rossa far parte di qualsiasi fazione illegale.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Il personale sanitario in servizio non può essere rapito o costretto a svolgere azioni illegali.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                La fazione ospedale è considerata <strong>NEUTRALE</strong>. 
-                                In qualsiasi azione RP non possono prendere le parti di alcuna fazione e devono rianimare in base a come essa è terminata, 
-                                cercando di simulare la vita reale il più possibile trasportando il ferito in ospedale e facendo RP.
-                                (Rianimare prima la fazione che ha vinto l'azione).
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                È obbligatorio chiamare i medici ad azione finita.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Il personale medico non può testimoniare fatti accaduti durante il servizio e deve rispettare il segreto professionale.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Essere <strong>NEUTRALI</strong> non significa essere immuni al <strong>NO FEAR</strong>: 
-                                quando i medici vengono puntati e/o minacciati, dovranno simulare anch'essi la situazione RP.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Se il medico ritiene opportuno il ricovero di un soggetto, quest'ultimo non potrà rifiutarsi 
-                                e sarà obbligato a recarsi in ospedale.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Fuori servizio il personale sanitario può effettuare azioni illegali a proprio rischio e pericolo.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Non è possibile rianimare persone fuori servizio. 
-                                Per fuori servizio si intende quando non si indossa la divisa.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                È obbligatorio utilizzare l'apposita divisa quando si è in servizio ed è vietato svolgere qualsiasi azione 
-                                non a scopo medico mentre la si indossa.
-                            </li>
-                        </ul>
-                    </section>
-
-                    <!-- FDO -->
-                    <section id="fdo" class="rule-section" data-aos="fade-up">
-                        <h2><i class="fas fa-shield-halved"></i> 👮 Regolamento FDO – Norme Generali 👮</h2>
-
-                        <ul class="rule-list">
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Le assunzioni nelle Forze dell'Ordine dovranno avvenire <strong>SOLO</strong> tramite la compilazione di bandi pubblici.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Le FDO non potranno cedere armi o equipaggiamenti a giocatori esterni alle fazioni FDO 
-                                e non potranno favorire o passare informazioni ai criminali.
-                                (<strong>No FDO corrotte</strong>).
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Durante una rapina o un rapimento, l'obiettivo principale sarà quello di liberare 
-                                e mettere in salvo l'ostaggio. L'arresto dei criminali sarà sempre in secondo piano.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Non sarà possibile riconoscere i Soldi Sporchi senza prima effettuare un apposito controllo 
-                                in questura/caserma coinvolgendo eventualmente i reparti specializzati della Guardia di Finanza, se disponibili.
-                                Chi non rispetterà tale regola sarà passibile di <strong>RICHIAMO PER FAIL RP</strong>.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Non è consentito il trasferimento diretto tra due FDO. 
-                                Chi desidera cambiare divisa dovrà rassegnare le dimissioni e partecipare ad un nuovo bando 
-                                nella nuova FDO scelta.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Eventuali passaggi concordati tra FDO saranno sanzionati con un richiamo al responsabile della fazione.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Il cambio di divisa comporta che il player dovrà <strong>TASSATIVAMENTE</strong> ricominciare 
-                                la carriera nella nuova FDO, pena sanzioni per il responsabile della fazione.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Liberi dal servizio o durante attività in borghese, i membri delle FDO potranno portare 
-                                solamente la pistola ed eventuali accessori 
-                                (es. paletta, manette, ecc.).
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Armi lunghe, manganelli e taser sono consentiti esclusivamente quando si è in divisa.
-                            </li>
-
-                            <li>
-                                <li>
-    <i class="fas fa-chevron-right"></i>
-    <strong>REGOLAMENTO FDO</strong>
-
-    <ol>
-        <li>Le FdO possono essere corrotte (con una motivazione RP e fatta eccezione per i soggetti indicati al punto 2) o infiltrarsi, ma solo con apertura ticket; se vengono scoperte subiranno il Perma-Jail.</li>
-
-        <li>Il Procuratore, il Giudice e i Dirigenti o Comandanti delle FdO sono incorruttibili.</li>
-
-        <li>La Riabilitazione Penale (pulizia della fedina) si esegue secondo le modalità e i costi previsti nel modulo dedicato. Se si arriva ad avere 10 reati di Classe A o B e non si è proceduto alla Riabilitazione Penale verrà emesso un mandato di cattura e si procederà al rinvio a giudizio per la condanna all'ergastolo (Perma-Jail). Il Giudice emetterà una sentenza di condanna (minimo pari al doppio di quanto avrebbe pagato per la Riabilitazione dei reati). Se il condannato non ha abbastanza soldi per pagare la sanzione gli verranno confiscati i beni (valutati al 60% del prezzo a nuovo) fino a raggiungere la somma dovuta. Ad avvenuto pagamento il conteggio dei mesi di reclusione si azzererà ma ogni futura riabilitazione costerà il doppio rispetto all'importo previsto (RECIDIVA).</li>
-
-        <li>L'FdO può obbligare un cittadino a fornire la carta d'identità o la patente.</li>
-
-        <li>Nel caso in cui un cittadino sia sprovvisto di carta d'identità, questo verrà portato in Questura/Caserma per identificazione tramite impronte digitali.</li>
-
-        <li>Chiunque acceda al parcheggio o al desk delle strutture FdO non può essere perquisito senza un valido motivo RP, salvo necessità di accesso agli uffici interni.</li>
-
-        <li>I soldi sporchi e le sostanze stupefacenti devono essere certificati come tali dalla GdF o dai reparti della scientifica dotati di macchinari idonei.</li>
-
-        <li>In caso di blitz ad un locale/casa appartenente ad una mafia o clan, il numero massimo delle FdO in azione è 30. Armi consentite FdO: qualsiasi tipo di arma. Armi consentite criminali: qualsiasi arma. Entrambe le fazioni possono utilizzare casco e giubbotto.</li>
-
-        <li>
-            Le FDO non possono perquisire un cittadino a meno che:
-            <ol type="a">
-                <li>Non sia colto in flagranza di reato.</li>
-                <li>Commetta una grave infrazione del CDS e non si dimostri collaborativo fermandosi all'ALT entro 2 minuti.</li>
-                <li>Dal Casellario Giudiziale risulti che abbia commesso reati di tipo A o B nelle ultime 24 ore.</li>
-            </ol>
-        </li>
-
-        <li>Serve una motivazione RP per poter ingaggiare la polizia durante un fermo stradale, posto di blocco o controllo di routine. In assenza di motivazione si verrà sanzionati per COP BAITING. È obbligatoria la clip video, altrimenti l'azione viene considerata vinta dalle FdO.</li>
-
-        <li>È vietato provocare volontariamente le FdO (COP-BAITING) per costringerle ad un inseguimento o conflitto. Pena: Warn o Ban in base alla gravità.</li>
-
-        <li>È possibile utilizzare le armi di ordinanza solo in servizio (in divisa o in borghese con pettorina o placchetta identificativa), compreso il taser.</li>
-
-        <li>L'FdO intervenuta su una rapina potrà chiedere supporto ma manterrà il comando dell'operazione.</li>
-
-        <li>È raccomandato l'uso della body-cam o GoPro in modalità REC durante le azioni.</li>
-
-        <li>Gli arresti o fermi non potranno durare più di 15 minuti reali dall'arrivo in caserma o questura, salvo casi di mancata collaborazione.</li>
-
-        <li>Chi viene arrestato non potrà essere mandato in galera per più di 10 minuti reali. In caso di mancata collaborazione si può arrivare ad un massimo di 15 minuti.</li>
-
-        <li>Ai cittadini portati in cella non si potrà togliere la GoPro e le registrazioni potranno essere utilizzate come prova di eventuali abusi o irregolarità.</li>
-
-        <li>Gli agenti in divisa non sono tenuti a fornire le proprie generalità ma solo il grado, salvo richiesta da parte di altre autorità competenti.</li>
-
-        <li>
-            La Procura andrà interessata obbligatoriamente per reati di Classe A o B. In assenza di Procuratori l'interrogatorio potrà essere svolto autonomamente solo se:
-            <ol type="a">
-                <li>Vi partecipano massimo 3 FdO, di cui almeno un Maresciallo o Vice-Ispettore.</li>
-                <li>È presente una registrazione audio/video.</li>
-            </ol>
-        </li>
-
-        <li>Solo la Procura può inserire i soggetti nell'elenco dei ricercati.</li>
-
-        <li>Se le FdO vincono un'azione potranno sequestrare sul posto solo armi, radio e cellulari. È vietato sottrarre o disattivare la GoPro.</li>
-
-        <li>I veicoli possono essere perquisiti solo se coinvolti in azioni o reati, risultano rubati oppure su mandato della Procura.</li>
-
-        <li>Ogni FdO dovrà mantenere aggiornata e condivisa la propria gerarchia con le altre forze e con la Procura.</li>
-
-        <li>All'interno del DS e del DS interforze è obbligatoria la registrazione con ruolo, grado e nome in game.</li>
-
-        <li>Le FdO possono dotarsi di reparti in borghese per attività investigative o di pattugliamento, rispettando le limitazioni previste.</li>
-
-        <li>L'avvio di indagini deve essere autorizzato dal Dirigente/Generale competente e, ove necessario, dalla Procura.</li>
-
-        <li>Le rapine ai negozietti possono essere effettuate senza ostaggio e prevedono automaticamente la fuga con inseguimento, senza blitz.</li>
-
-        <li>Il PdA per difesa personale o uso sportivo viene rilasciato dopo visite mediche, prove balistiche e colloquio. In caso di condanna penale viene revocato.</li>
-
-        <li>Le armi detenute con regolare PdA non possono essere esposte a vista e devono essere custodite secondo la normativa vigente.</li>
-
-        <li>Tutte le FdO sono tenute a compilare correttamente i rapporti come da linee guida.</li>
-
-        <li>Tutte le FdO che subiscono condanne penali non possono svolgere servizio fino all'avvenuta Riabilitazione Penale.</li>
-
-        <li>Al raggiungimento di 4 condanne penali per reati di tipo A o B, anche se riabilitati, si dispone il congedo con disonore.</li>
-
-        <li>Chi supera il concorso per l'ingresso nelle FdO deve obbligatoriamente seguire un corso di addestramento e studiare il presente regolamento.</li>
-    </ol>
-</li>
-
-                    <!-- PERMA -->
-                    <section id="perma" class="rule-section" data-aos="fade-up">
-                        <h2><i class="fas fa-skull"></i> ☠️ Regolamento Permadeath ☠️</h2>
-
-                        <ul class="rule-list">
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Il <strong>Permadeath</strong> rappresenta la morte definitiva di un personaggio.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Per effettuare un permadeath, il capo fazione o responsabile della fazione dovrà aprire un ticket 
-                                nella sezione apposita.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                All'interno del ticket dovranno essere forniti almeno 
-                                <strong>5 motivi validi in RP</strong>, non risolvibili in altro modo, accompagnati da prove.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                La richiesta verrà valutata da membri dello staff di grado non inferiore ad <strong>Admin</strong> 
-                                e l'esito finale sarà comunicato tramite votazione.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                L'azione potrà essere tentata una sola volta ed entro 
-                                <strong>48 ore</strong> dall'accettazione del ticket.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Se l'azione dovesse fallire o non venisse effettuata entro il limite stabilito, 
-                                un nuovo permadeath contro lo stesso utente potrà essere richiesto solo dopo 
-                                <strong>15 giorni</strong> e con motivazioni differenti.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Il richiedente dell'azione dovrà partecipare obbligatoriamente in prima persona.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Durante un'azione di permadeath, chiunque muoia subirà automaticamente il permadeath.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                La scena RP del permadeath dovrà essere principalmente basata su 
-                                <strong>RP parlato</strong> e non potrà svolgersi in pochi minuti.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                Prima dell'inizio dell'azione sarà necessario richiedere la presenza di uno staffer, 
-                                che avrà il compito di osservare e garantire la regolarità della scena.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-chevron-right"></i>
-                                In caso di permadeath o rischio di permadeath è severamente vietato:
-                            </li>
-                        </ul>
-
-                        <ul class="rule-list nested-list">
-                            <li>
-                                <i class="fas fa-times"></i>
-                                Fare testamento.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-times"></i>
-                                Lasciare qualsiasi bene personale ad altri player 
-                                (<strong>pena: wipe ad entrambi</strong>).
-                            </li>
-
-                            <li>
-                                <i class="fas fa-times"></i>
-                                Creare un personaggio che conduca la stessa vita del precedente.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-times"></i>
-                                Ricreare il personaggio con lo stesso nome o visivamente uguale.
-                            </li>
-
-                            <li>
-                                <i class="fas fa-times"></i>
-                                Portare in città fratelli, cugini o altri parenti/amici con intenti vendicativi.
-                            </li>
-                        </ul>
-                    </section>
-
-                    <!-- CHEATS -->
-                    <section id="cheats" class="rule-section" data-aos="fade-up">
-                        <h2><i class="fas fa-microchip"></i> Cheats & Assistenza</h2>
-                        <ul class="rule-list">
-                            <li><i class="fas fa-chevron-right"></i> <strong>Ban Diretto:</strong> Cheat, Hack, Macro, Crosshair esterni, No Bush.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>Obbligo Clip:</strong> Necessario registrare le azioni per contestazioni.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>Assistenza:</strong> Presentarsi immediatamente se chiamati (quittare = ban).</li>
-                        </ul>
-                    </section>
-
-                    <!-- CONVOGLIO -->
-                    <section id="convoglio" class="rule-section" data-aos="fade-up">
-                        <h2><i class="fas fa-truck-ramp-box"></i> Assalto al Convoglio</h2>
-                        <ul class="rule-list">
-                            <li><i class="fas fa-chevron-right"></i> <strong>Scopo:</strong> Liberare un condannato all'ergastolo durante il trasporto.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>Mezzi:</strong> Solo Daily per il trasporto (no elicotteri).</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>Esito:</strong> Se i criminali vincono, l'ergastolano diventa latitante.</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>Blocchi:</strong> Le FDO non possono sfondare blocchi stradali (Powergame).</li>
-                        </ul>
-                    </section>
-
-                    <!-- DONATORI -->
-                    <section id="donatori" class="rule-section" data-aos="fade-up">
-                        <h2><i class="fas fa-heart"></i> Donatori</h2>
-                        <ul class="rule-list">
-                            <li><i class="fas fa-chevron-right"></i> <strong>SUPER DONATORE:</strong> ------------</li>
-                            <li><i class="fas fa-chevron-right"></i> <strong>DONATORE:</strong> Alex.Santiago;Dir.Gen. Conte; Renny; Gianni0310; Marco Raia ; Melo Abruzzi ; NvroDan ; The Punisher ; V1x.</li>
-                        </ul>
-                    </section>
-
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <div class="footer-info">
-                <img src="img/Roleicon.png" alt="LFI Small Logo">
-                <p>&copy; 2026 La Forte Italia. Tutti i diritti riservati.</p>
-                <p class="footer-donation-info">Per info e donazioni contattateci tramite ticket su <a href="[discord.gg](https://discord.gg/6MVnwaDCDw)" target="_blank">Discord</a>!</p>
-                <div class="footer-legal-links">
-                    <a href="privacy.html">Privacy Policy</a>
-                    <span>|</span>
-                    <a href="tos.html">TOS</a>
-                </div>
-            </div>
-            <div class="footer-links">
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-tiktok"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p class="made-by">Made with ❤️ By La Forte Italia</p>
-            <p class="disclaimer">La Forte Italia is not affiliated with or endorsed by Take-Two, Rockstar North Interactive, or any other rights holder. All the used trademarks belong to their respective owners.</p>
-        </div>
-    </footer>
-
-    <script src="[cdn.jsdelivr.net](https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js)"></script>
-    <script src="[unpkg.com](https://unpkg.com/aos@2.3.1/dist/aos.js)"></script>
-    <script src="script.js"></script>
 </body>
 </html>
